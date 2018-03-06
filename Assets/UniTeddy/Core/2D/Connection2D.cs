@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UniTriangulation2D;
 using UnityEngine;
 
 namespace UniTeddy {
@@ -11,7 +12,6 @@ namespace UniTeddy {
 
 		Dictionary<Edge2D, List<Face2D>> _connection;
 
-		int daburi = 0;
 
 		public Connection2D() {
 			_connection = new Dictionary<Edge2D, List<Face2D>>();
@@ -39,7 +39,6 @@ namespace UniTeddy {
 			if(!_connection.ContainsKey(edge)) {
 				_connection.Add(edge, new List<Face2D>() { face });
 			} else {
-				daburi++;
 				_connection.TryGetValue(edge, out faces);
 				faces.Add(face);
 			}
@@ -63,8 +62,18 @@ namespace UniTeddy {
 			}
 		}
 
-		public override string ToString() {
-			return string.Format("[Connection2D] {0}", daburi);
+		/// <summary>
+		/// デバッグ用の簡易表示
+		/// </summary>
+		/// <param name="color">Color.</param>
+		public void DebugDraw(Color color) {
+			foreach(var item in _connection) {
+				var from = item.Key.midpoint;
+				Color c = item.Value.Count == 1 ? Color.red : color;
+				for(var i = 0; i < item.Value.Count; ++i) {
+					DebugExtention.DrawArrow(from, (item.Value[i].triangle.g - from) * 0.5f + from, c);
+				}
+			}
 		}
 	}
 }

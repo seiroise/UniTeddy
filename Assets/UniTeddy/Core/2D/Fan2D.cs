@@ -33,15 +33,19 @@ namespace UniTeddy {
 					}
 				}
 			}
+			// 始点と終点が重なっているケースが存在する。
+			if(dst[0] == dst[dst.Count - 1]) {
+				dst.RemoveAt(dst.Count - 1);
+			}
+
 			return dst;
 		}
 
 		float ComputeBaseElevation() {
 			float sum = 0f;
-			for(var i = 0; i < fanVertices.Count; ++i) {
-				sum += (fanVertices[i] - baseVertex).sqrMagnitude;
-			}
-			return Mathf.Sqrt(sum) / fanVertices.Count;
+			sum += (fanVertices[0] - baseVertex).magnitude;
+			sum += (fanVertices[fanVertices.Count - 1] - baseVertex).magnitude;
+			return sum * 0.25f;
 		}
 
 		public void DebugDraw(Color color) {

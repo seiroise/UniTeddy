@@ -8,8 +8,8 @@ namespace UniTriangulation2D {
 
 		static readonly float PI_2 = Mathf.PI * 2f;
 		static readonly Matrix4x4 MAT_IDENTITY = Matrix4x4.identity;
-		static readonly Quaternion QUAT_ROTATION_P20_Z = Quaternion.AngleAxis(20f, Vector3.forward);
-		static readonly Quaternion QUAT_ROTATION_N20_Z = Quaternion.AngleAxis(-20f, Vector3.forward);
+		static readonly Quaternion QUAT_ROTATION_N30 = Quaternion.AngleAxis(-30f, Vector3.forward);
+		static readonly Quaternion QUAT_ROTATION_P30 = Quaternion.AngleAxis(30f, Vector3.forward);
 
 		public static void DrawCircle2D(Vector3 center, float radius, Color color, int res = 8) {
 
@@ -31,10 +31,10 @@ namespace UniTriangulation2D {
 		}
 
 		public static void DrawArrow(Vector3 from, Vector3 to, Color color) {
+			var dir = (from - to) * 0.2f;
 			Debug.DrawLine(from, to, color);
-			var d = (from - to) * 0.2f;
-			Debug.DrawLine(to, QUAT_ROTATION_N20_Z * d + to, color);
-			Debug.DrawLine(to, QUAT_ROTATION_P20_Z * d + to, color);
+			Debug.DrawLine(to, to + QUAT_ROTATION_N30 * dir, color);
+			Debug.DrawLine(to, to + QUAT_ROTATION_P30 * dir, color);
 		}
 	}
 }

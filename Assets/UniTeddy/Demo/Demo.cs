@@ -72,6 +72,7 @@ namespace UniTeddy {
 				for(var i = 0; i < faces.Count; ++i) {
 					faces[i].DebugDraw();
 				}
+				_teddy.connection.DebugDraw(Color.green);
 				_teddy.axis.DebugDraw(Color.cyan);
 			}
 		}

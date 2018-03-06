@@ -15,6 +15,8 @@ namespace UniTeddy {
 		public Chord2D originChord { get; private set; }
 		public ChordalAxis2D axis { get; private set; }
 
+		public Connection2D connection { get; private set; }
+
 		public Delaunay2D resultingDelaunay { get; private set; }
 		public Skeleton skeleton { get; private set; }
 
@@ -23,12 +25,18 @@ namespace UniTeddy {
 				throw new System.ArgumentException("輪郭の頂点数は4以上必要です。");
 			}
 
+			var vertices = new VerticesSet2D();
+			foreach(var p in contour) {
+				vertices.CheckAndAdd(p);
+			}
+
 			// faceの作成
 			var delaunay = Delaunay2D.Contour(contour);
 			faces = CategorizeFaces(contour, delaunay);
 
 			// chordの作成
-			var connection = MakeFaceConnection(faces);
+			connection = MakeFaceConnection(faces);
+
 			var terminal = faces.Find(t => t.category == Face2D.Category.Terminal);
 			axis = new ChordalAxis2D(terminal, connection);
 

@@ -63,6 +63,20 @@ namespace UniTeddy {
 			return false;
 		}
 
+		/// <summary>
+		/// 面積を計算して返す。
+		/// ヘロンの公式より
+		/// https://ja.wikipedia.org/wiki/%E3%83%98%E3%83%AD%E3%83%B3%E3%81%AE%E5%85%AC%E5%BC%8F
+		/// </summary>
+		/// <returns>The size.</returns>
+		public float ComputeSize() {
+			var s = (e0.length + e1.length + e2.length) * 0.5f;
+			return Mathf.Sqrt(s * (s - e0.length) * (s - e1.length) * (s - e2.length));
+		}
+
+		/// <summary>
+		/// デバッグ用の簡易描画
+		/// </summary>
 		public void DebugDraw() {
 			switch(category) {
 			case Category.Terminal:
@@ -75,6 +89,10 @@ namespace UniTeddy {
 				triangle.DebugDraw(Color.yellow);
 				break;
 			}
+		}
+
+		public override string ToString() {
+			return string.Format("[Face2D: category={0}, triangle={1}, edges={2}, e0={3}, e1={4}, e2={5}, isPruned={6}]", category, triangle, edges, e0, e1, e2, isPruned);
 		}
 	}
 }
