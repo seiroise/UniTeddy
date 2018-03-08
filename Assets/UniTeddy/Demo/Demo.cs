@@ -2,12 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using SimpleStorage;
+using UnityEngine.Events;
 
 namespace UniTeddy {
 
 	[RequireComponent(typeof(LineRenderer), typeof(MeshRenderer), typeof(MeshFilter))]
 	public class Demo : MonoBehaviour {
 
+		[System.Serializable]
+		public class TeddyEvent : UnityEvent<Teddy> { }
+
+		[Range(0.01f, 1f)]
+		public float interval = 0.25f;
 		public TextAsset json;
 
 		public bool drawVertices = true;
@@ -16,19 +22,17 @@ namespace UniTeddy {
 		public bool drawChordalAxis = true;
 		public bool drawSkeleton = true;
 
+		public TeddyEvent onBuild;
+
 		List<Vector2> _points;
 		bool _isDragging;
 
 		Teddy _teddy;
 
 		LineRenderer _lineRenderer;
-		MeshRenderer _renderer;
-		MeshFilter _filter;
 
 		void Awake() {
 			_lineRenderer = GetComponent<LineRenderer>();
-			_renderer = GetComponent<MeshRenderer>();
-			_filter = GetComponent<MeshFilter>();
 
 			if(json) {
 				_points = Storage.LoadList<Vector2>(json);
@@ -50,7 +54,7 @@ namespace UniTeddy {
 
 			} else if(_isDragging) {
 				Vector2 pos = GetMousePosition();
-				if((pos - _points[_points.Count - 1]).magnitude > 0.5f) {
+				if((pos - _points[_points.Count - 1]).magnitude > interval) {
 					AddPosition(pos);
 				}
 			}
@@ -83,11 +87,11 @@ namespace UniTeddy {
 
 		void Build(List<Vector2> contour) {
 			var sw = System.Diagnostics.Stopwatch.StartNew();
-			_teddy = new Teddy(contour);
+			var teddy = new Teddy(contour);
 			sw.Stop();
-			Debug.Log(sw.ElapsedMilliseconds);
+			Debug.Log(string.Format("elapsed: {0}(ms)", sw.ElapsedMilliseconds));
 
-			_filter.sharedMesh = _teddy.volume.ToMesh();
+			onBuild.Invoke(teddy);
 		}
 
 		Vector2 GetMousePosition() {

@@ -13,6 +13,14 @@ namespace UniTeddy {
 		public float elevation { get; set; }
 		public int index { get; set; }
 
+		public Vertex2D mirror {
+			get {
+				var mirror = new Vertex2D(p);
+				mirror.elevation = -elevation;
+				return mirror;
+			}
+		}
+
 		public Vertex2D(Vector2 p) {
 			this.p = p;
 		}
@@ -22,7 +30,7 @@ namespace UniTeddy {
 		}
 
 		public override int GetHashCode() {
-			return p.GetHashCode();
+			return p.GetHashCode() * 123 ^ elevation.GetHashCode() * 456;
 		}
 
 		public void DebugDraw(Color color) {

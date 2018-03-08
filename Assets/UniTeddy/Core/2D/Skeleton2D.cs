@@ -127,6 +127,11 @@ namespace UniTeddy {
 				for(var i = 0; i < f.fanVertices.Count - 1; ++i) {
 					surfaces.Add(MakeSurface_Exterior(dic, f.fanVertices[i], f.fanVertices[i + 1], f.baseVertex));
 				}
+				// 反転
+				var mirror = f.baseVertex.mirror;
+				for(var i = 0; i < f.fanVertices.Count - 1; ++i) {
+					surfaces.Add(MakeSurface_Exterior(dic, f.fanVertices[i], f.fanVertices[i + 1], mirror, true));
+				}
 			}
 
 			// sleeve
@@ -144,8 +149,14 @@ namespace UniTeddy {
 				}
 
 				surfaces.Add(MakeSurface_Interior(dic, chord.dst, chord.src, c));
+				surfaces.Add(MakeSurface_Interior(dic, chord.dst.mirror, chord.src.mirror, c, true));
+
 				surfaces.Add(MakeSurface_Exterior(dic, a, b, chord.src));
-				surfaces.Add(MakeSurface_Interior(dic, chord.src, chord.dst, chord.dstEdge.GetOtherVertex(c)));
+				surfaces.Add(MakeSurface_Exterior(dic, a, b, chord.src.mirror, true));
+
+				var other = chord.dstEdge.GetOtherVertex(c);
+				surfaces.Add(MakeSurface_Interior(dic, chord.src, chord.dst, other));
+				surfaces.Add(MakeSurface_Interior(dic, chord.src.mirror, chord.dst.mirror, other, true));
 			}
 
 			// junction
@@ -162,7 +173,10 @@ namespace UniTeddy {
 				}
 
 				surfaces.Add(MakeSurface_Interior(dic, v, edge.mid, edge.a));
+				surfaces.Add(MakeSurface_Interior(dic, v.mirror, edge.mid.mirror, edge.a, true));
+
 				surfaces.Add(MakeSurface_Interior(dic, v, edge.mid, edge.b));
+				surfaces.Add(MakeSurface_Interior(dic, v.mirror, edge.mid.mirror, edge.b, true));
 			}
 
 			return new SkeletalVolume(surfaces, new List<ElevatedEdge>(dic.Keys));
@@ -175,9 +189,9 @@ namespace UniTeddy {
 		/// <param name="a">The alpha component.</param>
 		/// <param name="b">The blue component.</param>
 		/// <param name="m">M.</param>
-		Surface MakeSurface_Exterior(Dictionary<ElevatedEdge, ElevatedEdge> dic, Vertex2D a, Vertex2D b, Vertex2D m) {
+		Surface MakeSurface_Exterior(Dictionary<ElevatedEdge, ElevatedEdge> dic, Vertex2D a, Vertex2D b, Vertex2D m, bool isReverse = false) {
 			var d = UtilsMath.Cross(a.p - m.p, m.p - b.p);
-			if(d > 0) {
+			if(!isReverse ? d >= 0 : d < 0) {
 				var temp = a;
 				a = b;
 				b = temp;
@@ -201,9 +215,9 @@ namespace UniTeddy {
 		/// <param name="a">The alpha component.</param>
 		/// <param name="b">The blue component.</param>
 		/// <param name="m">M.</param>
-		Surface MakeSurface_Interior(Dictionary<ElevatedEdge, ElevatedEdge> dic, Vertex2D a, Vertex2D b, Vertex2D m) {
+		Surface MakeSurface_Interior(Dictionary<ElevatedEdge, ElevatedEdge> dic, Vertex2D a, Vertex2D b, Vertex2D m, bool isReverse = false) {
 			var d = UtilsMath.Cross(a.p - m.p, m.p - b.p);
-			if(d > 0) {
+			if(!isReverse ? d >= 0 : d < 0) {
 				var temp = a;
 				a = b;
 				b = temp;
