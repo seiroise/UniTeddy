@@ -5,10 +5,10 @@ using UnityEngine;
 namespace UniTeddy {
 
 	/// <summary>
-	/// メッシュ作成のために番号づけされた座標
+	/// 番号付された頂点
 	/// </summary>
 	public class IndexedVertex {
-		
+
 		public Vector3 p { get; private set; }
 		public int index { get; private set; }
 

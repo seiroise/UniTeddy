@@ -7,53 +7,49 @@ namespace UniTeddy {
 
 	public class Edge2D {
 
-		public Vector2 a { get; private set; }
-		public Vector2 b { get; private set; }
+		public Vertex2D a { get; private set; }
+		public Vertex2D b { get; private set; }
+		public Vertex2D mid { get; private set; }
 
-		public Vector2 midpoint { get; private set; }
-		public float length { get; private set; }
-		public bool isInternal { get; private set; }
+		public bool isExterior { get; private set; }
 
-		Circle2D _circumscribedCircle;
+		Circle2D _circumscribedCirle;
 		public Circle2D circumscribedCircle {
 			get {
-				if(_circumscribedCircle == null) _circumscribedCircle = new Circle2D(midpoint, (a - midpoint).magnitude);
-				return _circumscribedCircle;
+				if(_circumscribedCirle == null) _circumscribedCirle = new Circle2D(mid.p, (a.p - mid.p).magnitude);
+				return _circumscribedCirle;
 			}
 		}
 
-		public Edge2D(Vector2 a, Vector2 b, bool isInternal) {
+		public Edge2D(Vertex2D a, Vertex2D b, Vertex2D mid, bool isExterior) {
 			this.a = a;
 			this.b = b;
-			this.midpoint = (a + b) * 0.5f;
-			this.length = (a - b).magnitude * 0.5f;
-
-			this.isInternal = isInternal;
-		}
-
-		public static bool operator ==(Edge2D a, Edge2D b) {
-			return a.GetHashCode() == b.GetHashCode();
-		}
-
-		public static bool operator !=(Edge2D a, Edge2D b) {
-			return a.GetHashCode() != b.GetHashCode();
+			this.mid = mid;
+			this.isExterior = isExterior;
 		}
 
 		public override bool Equals(object obj) {
-			Edge2D s = obj as Edge2D;
-			return s.GetHashCode() == GetHashCode();
+			return (obj as Edge2D).GetHashCode() == GetHashCode();
 		}
 
 		public override int GetHashCode() {
 			return a.GetHashCode() ^ b.GetHashCode();
 		}
 
-		public bool HasPoint(Vector2 p) {
-			return (a.GetHashCode() == p.GetHashCode()) || (b.GetHashCode() == p.GetHashCode());
+		public bool HasVertex(Vertex2D v) {
+			return v.GetHashCode() == a.GetHashCode() || v.GetHashCode() == b.GetHashCode();
 		}
 
-		public Vector2 ExcludePoint(Vector2 p) {
-			return a == p ? b : a;
+		public Vertex2D IncludeVertex(Edge2D e) {
+			if(e.HasVertex(a)) {
+				return a;
+			} else {
+				return b;
+			}
+		}
+
+		public Vertex2D GetOtherVertex(Vertex2D v) {
+			return v == a ? b : a;
 		}
 	}
 }

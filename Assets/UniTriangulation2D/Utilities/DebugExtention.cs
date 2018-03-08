@@ -30,8 +30,8 @@ namespace UniTriangulation2D {
 			Debug.DrawLine(p2, p0, color);
 		}
 
-		public static void DrawArrow(Vector3 from, Vector3 to, Color color) {
-			var dir = (from - to) * 0.2f;
+		public static void DrawArrow(Vector3 from, Vector3 to, Color color, float head = 0.2f) {
+			var dir = (from - to) * head;
 			Debug.DrawLine(from, to, color);
 			Debug.DrawLine(to, to + QUAT_ROTATION_N30 * dir, color);
 			Debug.DrawLine(to, to + QUAT_ROTATION_P30 * dir, color);

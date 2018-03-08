@@ -19,12 +19,15 @@ namespace UniTeddy {
 		/// 距離を確認し付近にすでに存在しない場合に追加する。
 		/// </summary>
 		/// <param name="p">P.</param>
-		public void CheckAndAdd(Vector2 p) {
+		public Vertex2D CheckAndAdd(Vector2 p) {
 			var nearest = FindNear(p);
 			if(nearest != null) {
-				return;
+				return nearest;
 			}
-			vertices.Add(new Vertex2D(p));
+			var v = new Vertex2D(p);
+			v.index = vertices.Count;
+			vertices.Add(v);
+			return v;
 		}
 
 		/// <summary>

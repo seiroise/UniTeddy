@@ -4,9 +4,6 @@ using UnityEngine;
 
 namespace UniTeddy {
 
-	/// <summary>
-	/// 骨格上の立体的な面
-	/// </summary>
 	public class Surface {
 
 		public enum Divergent {
@@ -16,16 +13,11 @@ namespace UniTeddy {
 		public Divergent divergent { get; private set; }
 		public List<ElevatedEdge> edges { get; private set; }
 
-		public Surface(Divergent divergent, ElevatedEdge e0, ElevatedEdge e1) {
+		public Surface(Divergent divergent, ElevatedEdge a, ElevatedEdge b) {
 			this.divergent = divergent;
-			edges = new List<ElevatedEdge>();
-
-			if(divergent == Divergent.Exterior) {
-				
-			}
-
-			edges.Add(e0);
-			edges.Add(e1);
+			this.edges = new List<ElevatedEdge>();
+			edges.Add(a);
+			edges.Add(b);
 		}
 
 		public void Triangulate(List<int> indices) {

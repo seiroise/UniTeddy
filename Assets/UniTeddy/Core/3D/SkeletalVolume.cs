@@ -5,22 +5,20 @@ using UnityEngine;
 
 namespace UniTeddy {
 
-	/// <summary>
-	/// 立体の骨格
-	/// </summary>
-	public class Skeleton {
+	public class SkeletalVolume {
 
 		public List<Surface> surfaces { get; private set; }
 		public List<ElevatedEdge> edges { get; private set; }
 
-		List<Vector3> vertices;
-		List<int> indices;
+		List<Vector3> vertices { get; set; }
+		List<int> indices { get; set; }
 
-		public Skeleton(List<Surface> surfaces, List<ElevatedEdge> edges) {
+		public SkeletalVolume(List<Surface> surfaces, List<ElevatedEdge> edges) {
 			this.surfaces = surfaces;
 			this.edges = edges;
-			this.vertices = new List<Vector3>();
-			this.indices = new List<int>();
+
+			vertices = new List<Vector3>();
+			indices = new List<int>();
 		}
 
 		public Mesh ToMesh() {
@@ -40,19 +38,19 @@ namespace UniTeddy {
 			return mesh;
 		}
 
-		void ElevateEdge() {
-			this.vertices.Clear();
+		public void ElevateEdge() {
+			vertices.Clear();
 			var index = 0;
 			foreach(var edge in edges) {
 				index = edge.Elevate(index);
-				this.vertices.AddRange(edge.elevatedVertices.Select(v => { return v.p; }));
+				vertices.AddRange(edge.elevatedVertices.Select(v => { return v.p; }));
 			}
 		}
 
-		void TriangulateSurface() {
-			this.indices.Clear();
+		public void TriangulateSurface() {
+			indices.Clear();
 			foreach(var surf in surfaces) {
-				surf.Triangulate(this.indices);
+				surf.Triangulate(indices);
 			}
 		}
 	}

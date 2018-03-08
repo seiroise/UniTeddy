@@ -9,52 +9,32 @@ namespace UniTeddy {
 	/// </summary>
 	public class ElevatedEdge {
 
-		public Vector2 foot { get; private set; }
-		public Vector2 top { get; private set; }
-
-		public float topElevation { get; private set; }
+		public Vertex2D foot { get; private set; }
+		public Vertex2D top { get; private set; }
 
 		public List<IndexedVertex> elevatedVertices { get; private set; }
 
-		public ElevatedEdge(Vector2 foot, Vector2 top, float topElevation) {
+		public ElevatedEdge(Vertex2D foot, Vertex2D top) {
 			this.foot = foot;
 			this.top = top;
-			this.topElevation = topElevation;
 		}
 
 		public override int GetHashCode() {
 			return foot.GetHashCode() * 123 ^ top.GetHashCode() * 456;
 		}
 
-		public override bool Equals(object obj) {
-			var e = obj as ElevatedEdge;
-			return GetHashCode() == e.GetHashCode();
-		}
-
 		public int Elevate(int startIndex, int divnum = 8, float scale = 1f) {
 			elevatedVertices = new List<IndexedVertex>(divnum + 1);
 
-			Vector3 start = foot;
-			Vector3 end = top;
-			end.z = -topElevation;
-			Vector3 c = foot;
-			c.z = -topElevation;
+			Vector3 start = foot.p;
+			Vector3 end = top.p;
+			end.z = -top.elevation;
+			Vector3 c = foot.p;
+			c.z = end.z;
 
 			for(var i = 0; i < divnum + 1; ++i) {
 				elevatedVertices.Add(new IndexedVertex(GetPoint(start, c, end, (float)i / divnum), startIndex++));
 			}
-
-			/*
-			Vector3 foot = this.foot;
-			Vector3 step = this.top - this.foot;
-			step.z = -topElevation;
-			step /= divnum;
-
-			for(var i = 0; i < divnum + 1; ++i) {
-				Vector3 pos = foot + step * i;
-				elevatedVertices.Add(new IndexedVertex(pos, startIndex++));
-			}
-			*/
 			return startIndex;
 		}
 

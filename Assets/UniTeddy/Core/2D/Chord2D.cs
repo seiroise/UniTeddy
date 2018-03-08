@@ -7,27 +7,44 @@ namespace UniTeddy {
 
 	public class Chord2D {
 
-		public Vector2 src { get; set; }
-		public Vector2 dst { get; set; }
+		public Vertex2D src { get; set; }
+		public Vertex2D dst { get; set; }
 
-		Edge2D _srcEdge, _dstEdge;
-		public Edge2D srcEdge { get { return _srcEdge; } set { _srcEdge = value; src = value.midpoint; } }
-		public Edge2D dstEdge { get { return _dstEdge; } set { _dstEdge = value; dst = value.midpoint; } }
+		public Edge2D srcEdge { get; set; }
+		public Edge2D dstEdge { get; set; }
 
 		public Face2D face { get; set; }
-
 		public Chord2D pair { get; set; }
-
 		public List<Chord2D> connections { get; set; }
 
 		public Chord2D() {
 			connections = new List<Chord2D>();
 		}
 
+		/// <summary>
+		/// 他のChordとの接続関係を切る
+		/// </summary>
+		public void DisconnectSelf() {
+			foreach(var c in connections) {
+				c.pair.connections.Remove(this);
+			}
+			foreach(var c in pair.connections) {
+				c.pair.connections.Remove(this);
+			}
+			connections.Clear();
+			pair.connections.Clear();
+		}
+
+		/// <summary>
+		/// デバッグ用の簡易描画
+		/// </summary>
 		public void DebugDraw(Color color) {
-			DebugExtention.DrawArrow(src, dst, color);
-			if(pair != null) {
-				DebugExtention.DrawArrow(pair.src, pair.dst, color * 0.75f);
+			if(pair == null) {
+				DebugExtention.DrawArrow(src.p, dst.p, color);
+			} else {
+				Vector2 o = Quaternion.AngleAxis(90f, Vector3.forward) * (dst.p - src.p).normalized * 0.02f;
+				DebugExtention.DrawArrow(src.p + o, dst.p + o, color, 0.1f);
+				DebugExtention.DrawArrow(pair.src.p - o, pair.dst.p - o, color, 0.1f);
 			}
 		}
 	}

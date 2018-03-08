@@ -1,80 +1,93 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UniTriangulation2D;
 using UnityEngine;
+using SimpleStorage;
 
 namespace UniTeddy {
 
-	[RequireComponent(typeof(LineRenderer), typeof(MeshFilter), typeof(MeshRenderer))]
+	[RequireComponent(typeof(LineRenderer), typeof(MeshRenderer), typeof(MeshFilter))]
 	public class Demo : MonoBehaviour {
 
-		Teddy _teddy;
+		public TextAsset json;
+
+		public bool drawVertices = true;
+		public bool drawFaces = true;
+		public bool drawConnection = true;
+		public bool drawChordalAxis = true;
+		public bool drawSkeleton = true;
 
 		List<Vector2> _points;
 		bool _isDragging;
 
+		Teddy _teddy;
+
 		LineRenderer _lineRenderer;
-		MeshFilter _meshFilter;
+		MeshRenderer _renderer;
+		MeshFilter _filter;
 
 		void Awake() {
-			_points = new List<Vector2>();
 			_lineRenderer = GetComponent<LineRenderer>();
-			_meshFilter = GetComponent<MeshFilter>();
+			_renderer = GetComponent<MeshRenderer>();
+			_filter = GetComponent<MeshFilter>();
 
-			/*
-			// Edge2Dの等価性テスト
-			Vector2 p0 = new Vector2(0f, 1f);
-			Vector2 p1 = new Vector2(10f, 5f);
-
-			Edge2D e0 = new Edge2D(p0, p1);
-			Edge2D e1 = new Edge2D(p0, p1);
-			Edge2D e2 = new Edge2D(p1, p0);
-			*/
-
-			/*
-			// Vector2 の透過性テスト
-			Vector2 p0 = new Vector2(0f, 1f);
-			Vector2 p1 = new Vector2(1f, 0f);
-			Debug.Log(p0 == p1);
-			Debug.Log(p0.GetHashCode() == p1.GetHashCode());
-			*/
+			if(json) {
+				_points = Storage.LoadList<Vector2>(json);
+				Build(_points);
+			} else {
+				_points = new List<Vector2>();
+			}
 		}
 
 		void Update() {
-
 			if(Input.GetMouseButtonDown(0)) {
 				ClearPositions();
 				_isDragging = true;
 				AddPosition(GetMousePosition());
+
 			} else if(Input.GetMouseButtonUp(0)) {
 				_isDragging = false;
-				/*
-				for(var i = 0; i < _points.Count; ++i) {
-					Debug.Log(_points[i]);
-				}
-				*/
-				var sw = System.Diagnostics.Stopwatch.StartNew();
-				_teddy = new Teddy(_points);
-				sw.Stop();
-				Debug.Log(sw.ElapsedMilliseconds);
+				Build(_points);
 
-				_meshFilter.sharedMesh = _teddy.skeleton.ToMesh();
-
-			} else if(Input.GetMouseButton(0)) {
+			} else if(_isDragging) {
 				Vector2 pos = GetMousePosition();
 				if((pos - _points[_points.Count - 1]).magnitude > 0.5f) {
 					AddPosition(pos);
 				}
 			}
-
 			if(_teddy != null) {
-				var faces = _teddy.faces;
-				for(var i = 0; i < faces.Count; ++i) {
-					faces[i].DebugDraw();
+				if(drawVertices) {
+					foreach(var v in _teddy.vset.vertices) {
+						v.DebugDraw(Color.magenta);
+					}
 				}
-				_teddy.connection.DebugDraw(Color.green);
-				_teddy.axis.DebugDraw(Color.cyan);
+				if(drawFaces) {
+					foreach(var f in _teddy.faces) {
+						f.DebugDraw();
+					}
+				}
+				if(drawConnection) {
+					_teddy.connection.DebugDraw();
+				}
+				if(drawChordalAxis) {
+					_teddy.axis.DebugDraw();
+				}
+				if(drawSkeleton) {
+					_teddy.skeleton.DebugDraw();
+				}
 			}
+		}
+
+		void OnDestroy() {
+			Storage.SaveList<Vector2>(_points, "contour.json");
+		}
+
+		void Build(List<Vector2> contour) {
+			var sw = System.Diagnostics.Stopwatch.StartNew();
+			_teddy = new Teddy(contour);
+			sw.Stop();
+			Debug.Log(sw.ElapsedMilliseconds);
+
+			_filter.sharedMesh = _teddy.volume.ToMesh();
 		}
 
 		Vector2 GetMousePosition() {
@@ -83,10 +96,10 @@ namespace UniTeddy {
 			return Camera.main.ScreenToWorldPoint(mpos);
 		}
 
-		void AddPosition(Vector2 position) {
-			_points.Add(position);
+		void AddPosition(Vector2 point) {
+			_points.Add(point);
 			_lineRenderer.positionCount = _points.Count;
-			_lineRenderer.SetPosition(_points.Count - 1, position);
+			_lineRenderer.SetPosition(_points.Count - 1, point);
 		}
 
 		void ClearPositions() {

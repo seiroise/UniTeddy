@@ -1,0 +1,13 @@
+﻿<Properties StartupConfiguration="{A8C07FFD-13CE-053E-40C7-5082A445F7E4}|">
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/seiro/UnityProjects/UniTeddy/Assets/UniTeddy/Core/2D/ChordalAxis2D.cs" relfile="Assets/UniTeddy/Core/2D/ChordalAxis2D.cs" line="344" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.UniTeddy PreferredExecutionTarget="Unity.Editor" />
+  <MultiItemStartupConfigurations />
+</Properties>

@@ -1,51 +1,46 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UniTriangulation2D;
 using UnityEngine;
 
 namespace UniTeddy {
 
 	/// <summary>
-	/// 辺とそれを挟む面のペアを表現する
+	/// 辺による面の接続関係
 	/// </summary>
-	public class Connection2D {
+	public class EdgeConnection2D {
 
 		Dictionary<Edge2D, List<Face2D>> _connection;
 
-
-		public Connection2D() {
+		public EdgeConnection2D() {
 			_connection = new Dictionary<Edge2D, List<Face2D>>();
 		}
 
 		/// <summary>
-		/// 接続関係に入力された面を追加する。
+		/// 接続関係に入力した面を追加する。
 		/// </summary>
-		/// <returns>The add.</returns>
 		/// <param name="face">Face.</param>
-		public void Add(Face2D face) {
-			Add(face, face.e0);
-			Add(face, face.e1);
-			Add(face, face.e2);
+		public void AddFace(Face2D face) {
+			for(var i = 0; i < 3; ++i) {
+				Add(face, face.edges[i]);
+			}
 		}
 
 		/// <summary>
-		/// 接続関係を追加する。
+		/// 辺と対応する面の接続関係を追加する
 		/// </summary>
 		/// <returns>The add.</returns>
 		/// <param name="face">Face.</param>
 		/// <param name="edge">Edge.</param>
 		void Add(Face2D face, Edge2D edge) {
-			List<Face2D> faces;
 			if(!_connection.ContainsKey(edge)) {
 				_connection.Add(edge, new List<Face2D>() { face });
 			} else {
-				_connection.TryGetValue(edge, out faces);
-				faces.Add(face);
+				_connection[edge].Add(face);
 			}
 		}
 
 		/// <summary>
-		/// 入力した辺を界に隣接している面を取得する。
+		/// 入力した面から入力した辺を介する隣接する面を取得する。
 		/// </summary>
 		/// <returns><c>true</c>, if get neighbor was tryed, <c>false</c> otherwise.</returns>
 		/// <param name="edge">Edge.</param>
@@ -63,15 +58,28 @@ namespace UniTeddy {
 		}
 
 		/// <summary>
-		/// デバッグ用の簡易表示
+		/// 簡易描画
 		/// </summary>
-		/// <param name="color">Color.</param>
-		public void DebugDraw(Color color) {
+		/// <param name="interior">Interior.</param>
+		/// <param name="exterior">Exterior.</param>
+		public void DebugDraw() {
 			foreach(var item in _connection) {
-				var from = item.Key.midpoint;
-				Color c = item.Value.Count == 1 ? Color.red : color;
-				for(var i = 0; i < item.Value.Count; ++i) {
-					DebugExtention.DrawArrow(from, (item.Value[i].triangle.g - from) * 0.5f + from, c);
+				if(!item.Key.isExterior) {
+					if(item.Value.Count == 2) {
+						// 正しい外部辺
+						Debug.DrawLine(item.Key.a.p, item.Key.b.p, Color.cyan);
+					} else {
+						// 不正な外部辺
+						Debug.DrawLine(item.Key.a.p, item.Key.b.p, Color.red);
+					}
+				} else {
+					if(item.Value.Count == 1) {
+						// 正しい内部辺
+						Debug.DrawLine(item.Key.a.p, item.Key.b.p, Color.blue);
+					} else {
+						// 不正な内部辺
+						Debug.DrawLine(item.Key.a.p, item.Key.b.p, Color.green);
+					}
 				}
 			}
 		}
