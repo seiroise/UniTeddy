@@ -1,9 +1,11 @@
 ﻿<Properties StartupConfiguration="{A8C07FFD-13CE-053E-40C7-5082A445F7E4}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/UniTeddy/Demo/DemoObject.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/UniTeddy/Core/2D/Vertex2D.cs">
     <Files>
-      <File FileName="Assets/UniTeddy/Demo/Demo.cs" Line="9" Column="82" />
-      <File FileName="Assets/UniTeddy/Demo/DemoObject.cs" Line="5" Column="43" NotebookId="1" />
+      <File FileName="Assets/UniTeddy/Core/3D/ElevatedEdge.cs" Line="19" Column="19" />
+      <File FileName="Assets/UniTeddy/Core/2D/Skeleton2D.cs" Line="226" Column="4" />
+      <File FileName="Assets/UniTeddy/Core/3D/Surface.cs" Line="1" Column="1" />
+      <File FileName="Assets/UniTeddy/Core/2D/Vertex2D.cs" Line="12" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

@@ -111,6 +111,7 @@ namespace UniTeddy {
 						count++;
 					}
 				}
+				// baseV.elevation = (sum / count) * Random.Range(0.5f, 1.5f);
 				baseV.elevation = sum / count;
 			}
 		}

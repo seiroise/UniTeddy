@@ -8,10 +8,10 @@ namespace UniTeddy {
 	public class Vertex2D {
 
 		public Vector2 p { get; private set; }
+		public int index { get; set; }
 
 		public bool isExterior { get; set; }
 		public float elevation { get; set; }
-		public int index { get; set; }
 
 		public Vertex2D mirror {
 			get {

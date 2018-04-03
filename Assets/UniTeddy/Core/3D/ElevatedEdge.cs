@@ -29,9 +29,16 @@ namespace UniTeddy {
 			Vector3 start = foot.p;
 			Vector3 end = top.p;
 			end.z = -top.elevation;
+
+			// いい感じに膨らみを持たせる
 			Vector3 c = foot.p;
 			c.z = end.z;
 
+			/*
+			// いい感じに反らせる
+			Vector3 c = foot.p + (top.p - foot.p) * 0.5f;
+			c.z = 0f;
+			*/
 			for(var i = 0; i < divnum + 1; ++i) {
 				elevatedVertices.Add(new IndexedVertex(GetPoint(start, c, end, (float)i / divnum), startIndex++));
 			}
